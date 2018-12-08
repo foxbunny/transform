@@ -132,12 +132,25 @@ run("Generators", () => {
 });
 
 run("Ramda transducers", () => {
-  const ramdaTransformations = R.compose(
-    R.map(() => counter.step()),
-    R.map(x => x / 2),
-    R.filter(x => Math.floor(x) === x)
+  const transform = R.transduce(
+    R.compose(
+      R.map(getNum),
+      R.map(halve),
+      R.filter(isInt)
+    )
   );
 
-  return () =>
-    R.transduce(ramdaTransformations, R.flip(R.append), [], bigArray);
+  return () => transform(R.flip(R.append), [], bigArray);
+});
+
+run("Ramda transducers (fast)", () => {
+  const transform = R.transduce(
+    R.compose(
+      R.map(getNum),
+      R.map(halve),
+      R.filter(isInt)
+    )
+  );
+
+  return () => transform((xs, x) => (xs.push(x), xs), [], bigArray);
 });
