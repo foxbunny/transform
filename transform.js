@@ -15,7 +15,7 @@ const counter = {
   }
 };
 
-const bigArray = new Array(100001).fill(0);
+const bigArray = new Array(ARRAY_SIZE).fill(0);
 
 const getNum = () => counter.step();
 const halve = x => x / 2;
@@ -29,7 +29,7 @@ const run = (title, createTest) => {
   console.timeEnd(title);
   console.assert(
     result.length === RESULT_LENGTH,
-    `${title} did not return the correct number of results`
+    `${title} should have ${RESULT_LENGTH} items but has ${result.length}`
   );
 };
 
@@ -131,7 +131,17 @@ run("Generators", () => {
   };
 });
 
-run("Ramda transducers", () => {
+run("Ramda simple", () => {
+  const transform = R.pipe(
+    R.map(getNum),
+    R.map(halve),
+    R.filter(isInt)
+  );
+
+  return () => transform(bigArray);
+});
+
+run("Ramda transduce", () => {
   const transform = R.transduce(
     R.compose(
       R.map(getNum),
@@ -143,7 +153,7 @@ run("Ramda transducers", () => {
   return () => transform(R.flip(R.append), [], bigArray);
 });
 
-run("Ramda transducers (fast)", () => {
+run("Ramda transduce (fast)", () => {
   const transform = R.transduce(
     R.compose(
       R.map(getNum),
