@@ -55,6 +55,21 @@ run("Fast fix", () => {
     }, []);
 });
 
+run("Purely imperative", () => {
+  return () => {
+    const newArr = [];
+    const l = bigArray.length;
+    for (let i = 0; i < l; i++) {
+      const num = getNum();
+      const hlv = halve(num);
+      if (isInt(hlv)) {
+        newArr.push(hlv);
+      }
+    }
+    return newArr;
+  };
+});
+
 run("Transform 0 (shamefully slow)", () => {
   const transform = (arr, transformer) =>
     arr.reduce((newArr, member) => newArr.concat(transformer([member])), []);
